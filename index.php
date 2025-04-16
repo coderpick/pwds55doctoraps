@@ -8,18 +8,31 @@ include "layout/navbar.php";
 
 <!-- main content area start -->
 <div class="container my-5">
-    <div class="p-5 text-center bg-body-tertiary rounded-3">
-        <svg class="bi mt-4 mb-3" style="color: var(--bs-indigo);" width="100" height="100">
-            <use xlink:href="#bootstrap"></use>
-        </svg>
-        <h1 class="text-body-emphasis">Online Doctor Appointment Management Systemn</h1>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Doctor Schedules</h5>
+                </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="doctorTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Name</th>
+                                <th>Education</th>
+                                <th>Specialty</th>
+                                <th>Appointment Date</th>
+                                <th>Time Slot</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
 
-        <div class="d-inline-flex gap-2 my-5">
-            <button class="d-inline-flex align-items-center btn btn-primary btn-lg px-4 rounded-pill" type="button">
-                Book an Appointment
-
-            </button>
-
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
 </div>

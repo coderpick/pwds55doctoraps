@@ -33,7 +33,7 @@ if (isset($_POST['login'])) {
     if (empty($error)) {
 
         try {
-            $sql = "SELECT * FROM users WHERE email = :email AND type = 'patient'"; 
+            $sql = "SELECT * FROM users WHERE email = :email AND type = 'patient'";
             if ($stmt = $conn->prepare($sql)) {
                 $stmt->bindParam(':email', $data['email'], PDO::PARAM_STR);
 
@@ -41,12 +41,11 @@ if (isset($_POST['login'])) {
                     $user = $stmt->fetch();
                     if ($user != null) {
                         if (password_verify($data['password'], $user['password'])) {
-                            
-                            $_SESSION['username'] = $user['name'];                       
-                            $_SESSION['is_login'] = true;   
-                            
-                            header("Location: index.php");
 
+                            $_SESSION['username'] = $user['name'];
+                            $_SESSION['is_login'] = true;
+
+                            header("Location: index.php");
                         } else {
                             $error['password'] = "Password is incorrect";
                         }
@@ -64,6 +63,17 @@ if (isset($_POST['login'])) {
 <!-- main content area start -->
 <div class="container my-5">
     <div class="row justify-content-center">
+        <?php
+        if (isset($_SESSION['success'])) { ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Success!</strong> <?php echo $_SESSION['success']; ?>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <?php
+        }
+        unset($_SESSION['success']);
+
+        ?>
         <div class="col-md-6">
             <!-- login form -->
             <div class="card">

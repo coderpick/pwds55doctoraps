@@ -1,6 +1,6 @@
- <nav class="navbar navbar-expand-lg bg-body-tertiary">
+ <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom">
      <div class="container">
-         <a class="navbar-brand" href="#">Doctor Appointment</a>
+         <a class="navbar-brand" href="index.php">Doctor Appointment</a>
          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
              <span class="navbar-toggler-icon"></span>
          </button>
@@ -10,10 +10,7 @@
                  <?php
                     if (isset($_SESSION['is_login']) &&  $_SESSION['is_login'] == true) { ?>
                      <li class="nav-item">
-                         <a class="nav-link active" aria-current="page" href="#">Book Appointment</a>
-                     </li>
-                     <li class="nav-item">
-                         <a class="nav-link active" aria-current="page" href="#">My Appointments</a>
+                         <a class="nav-link" aria-current="page" href="#">My Appointments</a>
                      </li>
 
                      <li class="nav-item dropdown">
