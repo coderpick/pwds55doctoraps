@@ -1,5 +1,5 @@
 <?php
-$pageTitle = 'Doctors';
+$pageTitle = 'Patients';
 include_once('layout/head.php');
 ?>
 
@@ -57,45 +57,34 @@ include_once('layout/head.php');
                                         <th>#</th>
                                         <th>Name</th>
                                         <th>Phone</th>
-                                        <th>Degree</th>
-                                        <th>Expertise</th>
                                         <th>Gender</th>
-                                        <th>Dob</th>
-                                        <th>Status</th>
+                                        <th>Date of birth</th>
+                                        <th>Address</th>
+                                        <th>Marital status</th>
+                                        <th>Joined at</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT doctors.*,users.name,users.email,users.status FROM doctors INNER JOIN users ON doctors.user_id=users.id";
+                                    $sql = "SELECT * FROM patients";
                                     $result = $conn->query($sql);
                                     if ($result->rowCount() > 0) {
                                         $rows = $result->fetchAll(PDO::FETCH_OBJ);
-                                        foreach ($rows as $key => $row) { ?>
+                                        foreach ($rows as $row) {
+                                    ?>
                                             <tr>
-                                                <td><?php echo $key + 1 ?></td>
+                                                <td><?php echo $row->id; ?></td>
+                                                <td><?php echo $row->name; ?></td>
+                                                <td><?php echo $row->phone; ?></td>
+                                                <td><?php echo $row->gender; ?></td>
+                                                <td><?php echo $row->dob; ?></td>
+                                                <td><?php echo $row->address; ?></td>
+                                                <td><?php echo $row->marital_status; ?></td>
+                                                <td><?php echo $row->created_at; ?></td>
                                                 <td>
-                                                    <div class="d-flex align-items-center">
-                                                        <div class="flex-shrink-0">
-                                                            <img style="width: 60px;height: 60px;" class="rounded-circle" src="<?php echo $row->image ?>" alt="...">
-                                                        </div>
-                                                        <div class="flex-grow-1 ms-3">
-                                                            <h6> <?php echo $row->name ?></h6>
-                                                        </div>
-                                                    </div>
+                                                    <a href="show-patient.php?id=<?php echo $row->id; ?>" class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
 
-
-                                                </td>
-                                                <td><?php echo $row->phone ?></td>
-                                                <td><?php echo $row->degree ?></td>
-                                                <td><?php echo $row->expert_in ?></td>
-                                                <td><?php echo $row->gender ?></td>
-                                                <td><?php echo $row->dob ?></td>
-                                                <td><?php echo $row->status ?></td>
-                                                <td>
-                                                    <a class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
-                                                    <a href="edit_doctor.php?id=<?php echo base64_encode($row->id) ?>" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
-                                                    <a href="delete_doctor.php?id=<?php echo base64_encode($row->id) ?>" onclick="return confirm('Are you sure to delete?')" class="btn btn-danger btn-sm"><i class="bi bi-trash"></i></a>
                                                 </td>
                                             </tr>
                                     <?php

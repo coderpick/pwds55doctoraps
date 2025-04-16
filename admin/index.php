@@ -16,7 +16,7 @@ session_start();
   <link rel="stylesheet" type="text/css" href="css/main.css">
   <!-- Font-icon css-->
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-  <title>Login - Vali Admin</title>
+  <title>Login - Admin</title>
 </head>
 
 <body>
@@ -87,12 +87,12 @@ session_start();
         <h3 class="login-head"><i class="bi bi-person me-2"></i>SIGN IN</h3>
         <div class="mb-3">
           <label class="form-label">Email</label>
-          <input class="form-control" name="email" type="text" placeholder="Email" autofocus>
+          <input class="form-control" name="email" type="text" value="admin@gmail.com" placeholder="Email" autofocus>
           <span class="text-danger"><?php echo $error['email'] ?? ''; ?></span>
         </div>
         <div class="mb-3">
           <label class="form-label">PASSWORD</label>
-          <input class="form-control" name="password" type="password" placeholder="Password">
+          <input class="form-control" name="password" type="password" value="123456" placeholder="Password">
           <span class="text-danger"><?php echo $error['password'] ?? ''; ?></span>
         </div>
         <div class="mb-3">

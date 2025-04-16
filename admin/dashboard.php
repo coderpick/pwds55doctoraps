@@ -1,4 +1,5 @@
 <?php
+$pageTitle = 'Admin';
 include_once('layout/head.php');
 ?>
 
@@ -37,7 +38,7 @@ include_once('layout/head.php');
   include_once('layout/common_js.php');
   ?>
   <!-- Page specific javascripts-->
- 
+
 </body>
 
 </html>
