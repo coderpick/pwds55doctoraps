@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 5.2.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost
--- Generation Time: Apr 16, 2025 at 09:25 AM
--- Server version: 8.0.40
--- PHP Version: 8.4.3
+-- Host: localhost:3306
+-- Generation Time: Apr 16, 2025 at 12:30 PM
+-- Server version: 8.0.30
+-- PHP Version: 8.3.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -32,10 +32,10 @@ CREATE TABLE `appointments` (
   `doctor_id` int NOT NULL,
   `patient_id` int NOT NULL,
   `schedule_id` int NOT NULL,
-  `appointment_number` varchar(255) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `reason` text COLLATE utf8mb3_unicode_ci NOT NULL,
-  `status` enum('Booked','In_Process','Completed','Cancel') COLLATE utf8mb3_unicode_ci NOT NULL,
-  `doctor_comment` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `appointment_number` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `status` enum('Booked','In_Process','Completed','Cancel') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `doctor_comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -77,7 +77,7 @@ INSERT INTO `doctors` (`id`, `user_id`, `name`, `phone`, `image`, `address`, `do
 CREATE TABLE `patients` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
-  `name` varchar(255) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `phone` varchar(15) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `address` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `gender` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
@@ -105,13 +105,20 @@ CREATE TABLE `schedules` (
   `id` int NOT NULL,
   `doctor_id` int NOT NULL,
   `schedule_date` date NOT NULL,
-  `schedule_day` varchar(255) COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `start_time` time NOT NULL,
-  `end_time` time NOT NULL,
+  `schedule_day` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
+  `start_time` varchar(50) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `end_time` varchar(50) COLLATE utf8mb3_unicode_ci NOT NULL,
   `consulting_time` int NOT NULL,
-  `status` enum('Available','Booked') COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Available',
+  `status` enum('Available','Booked') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Available',
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Dumping data for table `schedules`
+--
+
+INSERT INTO `schedules` (`id`, `doctor_id`, `schedule_date`, `schedule_day`, `start_time`, `end_time`, `consulting_time`, `status`, `created_at`) VALUES
+(2, 2, '2025-04-23', 'Wednesday', '10:00 AM', '10:15 AM', 15, 'Booked', '2025-04-16 06:15:42');
 
 -- --------------------------------------------------------
 
@@ -207,7 +214,7 @@ ALTER TABLE `patients`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
