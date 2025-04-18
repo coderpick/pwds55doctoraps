@@ -51,6 +51,7 @@ include_once('layout/head.php');
                             $expert_in = $_POST['expert_in'];
                             $degree = $_POST['degree'];
                             $address = $_POST['address'];
+                            $status  = @$_POST['status'];
 
                             $id = inputValidation($_POST['id']);
                             $user_id = inputValidation($_POST['user_id']);
@@ -142,7 +143,7 @@ include_once('layout/head.php');
                                         $stmt->execute();
                                     }
                                     /* update doctor */
-                                    $sql = "UPDATE doctors SET name=:name, phone=:phone, image=:image, address=:address, dob=:dob, expert_in=:expert_in, degree=:degree, gender=:gender WHERE id=:id";
+                                    $sql = "UPDATE doctors SET name=:name, phone=:phone, image=:image, address=:address, dob=:dob, expert_in=:expert_in, degree=:degree, gender=:gender,status=:status WHERE id=:id";
 
                                     if ($stmt = $conn->prepare($sql)) {
                                         $stmt->bindParam(':name', $data['name'], PDO::PARAM_STR);
@@ -153,6 +154,7 @@ include_once('layout/head.php');
                                         $stmt->bindParam(':expert_in', $data['expert_in'], PDO::PARAM_STR);
                                         $stmt->bindParam(':degree', $data['degree'], PDO::PARAM_STR);
                                         $stmt->bindParam(':gender', $data['gender'], PDO::PARAM_STR);
+                                        $stmt->bindParam(':status', $status, PDO::PARAM_STR);
                                         $stmt->bindParam(':id', $id, PDO::PARAM_INT);
                                         $stmt->execute();
                                         $_SESSION['success'] = "Doctor update successfully";
@@ -185,7 +187,8 @@ include_once('layout/head.php');
                                 'expert_in' => $row->expert_in,
                                 'degree' => $row->degree,
                                 'gender' => $row->gender,
-                                'user_id' => $row->user_id
+                                'user_id' => $row->user_id,
+                                'status' => $row->status
                             ];
                         }
                         ?>
@@ -246,11 +249,21 @@ include_once('layout/head.php');
                                         <input type="text" name="degree" id="degree" value="<?php echo $data['degree'] ?? ''; ?>" class="form-control">
                                         <span class="text-danger"><?php echo $error['degree'] ?? ''; ?></span>
                                     </div>
-
+                                    <div class="mb-3">
+                                        <label for="status" class="form-label mr-3 d-block">Status: </label>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" <?php echo $data['status'] == true ? 'checked' : '' ?> name="status" id="active" value="1">
+                                            <label class="form-check-label" for="active">Active</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" <?php echo $data['status'] == false ? 'checked' : '' ?> name="status" id="inactive" value="0">
+                                            <label class="form-check-label" for="inactive">Inactive</label>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>
-                            <div class="text-center">
+                            <div class="text-center my-4">
                                 <button type="submit" name="submit" class="btn btn-primary">Update</button>
                             </div>
                         </form>

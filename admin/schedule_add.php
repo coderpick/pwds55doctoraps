@@ -56,6 +56,7 @@ include_once('layout/head.php');
                                     $data['start_time'] = $_POST['start_time'];
                                     $data['end_time'] = $_POST['end_time'];
                                     $data['average_consulting_time'] = $_POST['average_consulting_time'];
+                                    $maximum_appointment = $_POST['maximum_appointment'];
                                     $date =  $_POST['schedule_date'];
                                     $dayName = date('l', strtotime($date));
 
@@ -77,7 +78,7 @@ include_once('layout/head.php');
 
                                     if (count($error) == 0) {
 
-                                        $sql = "INSERT INTO schedules (doctor_id, schedule_date, schedule_day, start_time, end_time, consulting_time,created_at) VALUES (:doctor, :schedule_date, :schedule_day, :start_time, :end_time, :consulting_time,:created_at)";
+                                        $sql = "INSERT INTO schedules (doctor_id, schedule_date, schedule_day, start_time, end_time, consulting_time,maximum_appointment,created_at) VALUES (:doctor, :schedule_date, :schedule_day, :start_time, :end_time, :consulting_time,:maximum_appointment,:created_at)";
                                         try {
                                             if ($stmt = $conn->prepare($sql)) {
                                                 $stmt->bindParam(':doctor', $data['doctor']);
@@ -86,6 +87,7 @@ include_once('layout/head.php');
                                                 $stmt->bindParam(':start_time', $data['start_time']);
                                                 $stmt->bindParam(':end_time', $data['end_time']);
                                                 $stmt->bindParam(':consulting_time', $data['average_consulting_time']);
+                                                $stmt->bindParam(':maximum_appointment', $maximum_appointment, PDO::PARAM_INT);
                                                 $stmt->bindParam(':created_at', date('Y-m-d H:i:s'));
                                                 if ($stmt->execute()) {
                                                     $_SESSION['success'] = "Schedule added successfully";
@@ -105,7 +107,7 @@ include_once('layout/head.php');
                                         <select name="doctor" id="doctor" class="form-control" required>
                                             <option value="" selected disabled>Select Doctor</option>
                                             <?php
-                                            $sql = "SELECT * FROM doctors";
+                                            $sql = "SELECT * FROM doctors WHERE status=true";
                                             $result = $conn->query($sql);
                                             if ($result->rowCount() > 0) {
                                                 $rows = $result->fetchAll(PDO::FETCH_OBJ);
@@ -148,6 +150,12 @@ include_once('layout/head.php');
                                             ?>
                                         </select>
                                         <span class="text-danger"><?php echo $error['average_consulting_time'] ?? ''; ?></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <!-- max appointment -->
+                                        <label for="maximum_appointment">Max Appointment</label>
+                                        <input type="number" min="1" name="maximum_appointment" class="form-control" id="maximum_appointment">
+                                        <span class="text-danger"><?php echo $error['maximum_appointment'] ?? ''; ?></span>
                                     </div>
 
                                     <div class="text-center pt-3 pb-5">

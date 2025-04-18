@@ -2,6 +2,7 @@
 $realpath = realpath(dirname(__FILE__));
 require_once($realpath . "/../../db/db_connection.php");
 require_once($realpath . "/../helper/helpers.php");
+date_default_timezone_set('Asia/Dhaka');
 session_start();
 ?>
 

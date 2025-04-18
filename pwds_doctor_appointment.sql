@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 16, 2025 at 12:30 PM
+-- Generation Time: Apr 18, 2025 at 06:41 AM
 -- Server version: 8.0.30
--- PHP Version: 8.3.16
+-- PHP Version: 8.3.17
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -56,7 +56,7 @@ CREATE TABLE `doctors` (
   `expert_in` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `degree` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
   `gender` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `status` enum('Active','Inactive') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Active',
+  `status` tinyint(1) NOT NULL DEFAULT '1',
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -65,8 +65,9 @@ CREATE TABLE `doctors` (
 --
 
 INSERT INTO `doctors` (`id`, `user_id`, `name`, `phone`, `image`, `address`, `dob`, `expert_in`, `degree`, `gender`, `status`, `created_at`) VALUES
-(1, 5, 'Monir hossain', '01939981172', 'uploads/174435233567f8b44f5291a.png', 'Dhaka', '1990-04-16', 'Cardiologist', 'MBBS', 'Male', 'Active', NULL),
-(2, 6, 'Ginger Bell', '01755554550', 'uploads/174443533567f9f88767283.jpg', 'Recusandae Laudanti', '1985-04-07', 'Laboriosam nihil im', 'Perferendis in sunt', 'Male', 'Active', NULL);
+(1, 5, 'Monir hossain', '01939981172', 'uploads/174435233567f8b44f5291a.png', 'Dhaka', '1990-04-16', 'Cardiologist', 'MBBS', 'Male', 1, NULL),
+(2, 6, 'Ginger Bell', '01755554550', 'uploads/174443533567f9f88767283.jpg', 'Recusandae Laudanti', '1985-04-07', 'Laboriosam nihil im', 'Perferendis in sunt', 'Male', 1, NULL),
+(4, 21, 'Dr. Md. Kabir khan', '01756987412', 'uploads/17449518736801da41861d1.png', 'Dhaka', '2025-04-18', 'Gynologist', 'MBBS', 'Male', 1, '2025-04-18 04:51:13');
 
 -- --------------------------------------------------------
 
@@ -93,7 +94,8 @@ CREATE TABLE `patients` (
 INSERT INTO `patients` (`id`, `user_id`, `name`, `phone`, `address`, `gender`, `dob`, `marital_status`, `created_at`) VALUES
 (1, 16, 'Hall Leon', '01725697440', 'Dhaka', 'Male', '1986-05-09', 'Single', '2025-04-16 02:59:39'),
 (2, 17, 'Caryn Hayden', '01755555444', 'Repudiandae laborum', 'Female', '1970-08-14', 'Married', '2025-04-16 03:00:17'),
-(3, 19, 'Brody Graham', '01923569874', 'Natore', 'Male', '1988-10-11', 'Married', '2025-04-16 03:14:32');
+(3, 19, 'Brody Graham', '01923569874', 'Natore', 'Male', '1988-10-11', 'Married', '2025-04-16 03:14:32'),
+(4, 20, 'Connor Patel', '01723659874', 'Dhka', 'Female', '1980-05-22', 'Married', '2025-04-17 22:32:49');
 
 -- --------------------------------------------------------
 
@@ -106,9 +108,10 @@ CREATE TABLE `schedules` (
   `doctor_id` int NOT NULL,
   `schedule_date` date NOT NULL,
   `schedule_day` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci DEFAULT NULL,
-  `start_time` varchar(50) COLLATE utf8mb3_unicode_ci NOT NULL,
-  `end_time` varchar(50) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `start_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
+  `end_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `consulting_time` int NOT NULL,
+  `maximum_appointment` int NOT NULL,
   `status` enum('Available','Booked') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Available',
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
@@ -117,8 +120,11 @@ CREATE TABLE `schedules` (
 -- Dumping data for table `schedules`
 --
 
-INSERT INTO `schedules` (`id`, `doctor_id`, `schedule_date`, `schedule_day`, `start_time`, `end_time`, `consulting_time`, `status`, `created_at`) VALUES
-(2, 2, '2025-04-23', 'Wednesday', '10:00 AM', '10:15 AM', 15, 'Booked', '2025-04-16 06:15:42');
+INSERT INTO `schedules` (`id`, `doctor_id`, `schedule_date`, `schedule_day`, `start_time`, `end_time`, `consulting_time`, `maximum_appointment`, `status`, `created_at`) VALUES
+(2, 2, '2025-04-23', 'Wednesday', '10:00 AM', '01:00 PM', 15, 20, 'Available', '2025-04-16 06:15:42'),
+(3, 1, '2025-04-19', 'Saturday', '03:00 PM', '06:00 PM', 15, 15, 'Available', '2025-04-18 05:06:39'),
+(4, 4, '2025-04-19', 'Saturday', '07:00 AM', '10:00 AM', 15, 15, 'Available', '2025-04-18 05:10:50'),
+(6, 1, '2025-04-21', 'Monday', '08:00 AM', '10:00 AM', 15, 10, 'Available', '2025-04-18 06:00:32');
 
 -- --------------------------------------------------------
 
@@ -146,7 +152,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `status`, `type`) VALUES
 (6, 'Ginger Bell', 'wynohaboxy@mailinator.com', '$2y$10$yaKmZpzV17YFjdsOCXuln.07HJ0ibGQsnhPHXfVhnNpEStRjFI9G2', 'Active', 'doctor'),
 (16, 'Hall Leon', 'hexequ@mailinator.com', '$2y$10$7AUAu1VG7FRybp7LSAiBeuXsPuX1kMP2UnSKHEH4efHAyqQwAX.Ty', 'Active', 'patient'),
 (17, 'Caryn Hayden', 'fuqyq@mailinator.com', '$2y$10$DwJqeyVd1flqvad/oxbOVOztY6AEiYJlwOSOP3Vkge6CcAzuNHrky', 'Active', 'patient'),
-(19, 'Brody Graham', 'kamyqulo@mailinator.com', '$2y$10$lGpeCRO6nP6gbpKGIaQO4uJH91ZcheHF.NfkKFH1zKG.XTcT5ihKO', 'Active', 'patient');
+(19, 'Brody Graham', 'kamyqulo@mailinator.com', '$2y$10$lGpeCRO6nP6gbpKGIaQO4uJH91ZcheHF.NfkKFH1zKG.XTcT5ihKO', 'Active', 'patient'),
+(20, 'Connor Patel', 'tipiryfuqy@mailinator.com', '$2y$10$I3bs3oDJ/iSdbAr.wkG3QOw51cZak4HAs1NoO2GexHFtQkDpfxyD6', 'Active', 'patient'),
+(21, 'Dr. Md. Kabir khan', 'kabir@gmail.com', '$2y$10$QLpv9ubJIehldNyKQQLE7ORDx2w/gQ/eQW4gH/g6GQS.U1Lc2cXjK', 'Active', 'doctor');
 
 --
 -- Indexes for dumped tables
@@ -202,25 +210,25 @@ ALTER TABLE `appointments`
 -- AUTO_INCREMENT for table `doctors`
 --
 ALTER TABLE `doctors`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=20;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints for dumped tables

@@ -67,7 +67,7 @@ include_once('layout/head.php');
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $sql = "SELECT doctors.*,users.name,users.email,users.status FROM doctors INNER JOIN users ON doctors.user_id=users.id";
+                                    $sql = "SELECT doctors.*,users.name,users.email,users.status as userSatus FROM doctors INNER JOIN users ON doctors.user_id=users.id";
                                     $result = $conn->query($sql);
                                     if ($result->rowCount() > 0) {
                                         $rows = $result->fetchAll(PDO::FETCH_OBJ);
@@ -91,7 +91,16 @@ include_once('layout/head.php');
                                                 <td><?php echo $row->expert_in ?></td>
                                                 <td><?php echo $row->gender ?></td>
                                                 <td><?php echo $row->dob ?></td>
-                                                <td><?php echo $row->status ?></td>
+                                                <td>
+                                                    <?php
+                                                    if ($row->status == true) {
+                                                        echo '<span class="badge bg-success">Active</span>';
+                                                    } else {
+                                                        echo '<span class="badge bg-danger">Inactive</span>';
+                                                    }
+                                                    ?>
+
+                                                </td>
                                                 <td>
                                                     <a class="btn btn-info btn-sm"><i class="bi bi-eye"></i></a>
                                                     <a href="edit_doctor.php?id=<?php echo base64_encode($row->id) ?>" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>

@@ -56,41 +56,60 @@ include_once('layout/head.php');
                                     $data['start_time'] = $_POST['start_time'];
                                     $data['end_time'] = $_POST['end_time'];
                                     $data['average_consulting_time'] = $_POST['average_consulting_time'];
+                                    $data['maximum_appointment'] = $_POST['maximum_appointment'];
                                     $date =  $_POST['schedule_date'];
                                     $dayName = date('l', strtotime($date));
+                                    $schedule_id = $_POST['schedule_id'];
 
                                     if (empty($data['doctor'])) {
                                         $error['doctor'] = 'Please select a doctor';
+                                    } else {
+                                        $data['doctor'] = $_POST['doctor'];
                                     }
                                     if (empty($data['schedule_date'])) {
                                         $error['schedule_date'] = 'Please select a schedule date';
+                                    } else {
+                                        $data['schedule_date'] = $_POST['schedule_date'];
                                     }
                                     if (empty($data['start_time'])) {
                                         $error['start_time'] = 'Please select a start time';
+                                    } else {
+                                        $data['start_time'] = $_POST['start_time'];
                                     }
                                     if (empty($data['end_time'])) {
                                         $error['end_time'] = 'Please select a end time';
+                                    } else {
+                                        $data['end_time'] = $_POST['end_time'];
                                     }
                                     if (empty($data['average_consulting_time'])) {
                                         $error['average_consulting_time'] = 'Please select a average consulting time';
+                                    } else {
+                                        $data['average_consulting_time'] = $_POST['average_consulting_time'];
+                                    }
+                                    if (empty($data['maximum_appointment'])) {
+                                        $error['maximum_appointment'] = 'Please select a maximum appointment';
+                                    } else {
+                                        $data['maximum_appointment'] = $_POST['maximum_appointment'];
                                     }
 
                                     if (count($error) == 0) {
-
-                                        $sql = "INSERT INTO schedules (doctor_id, schedule_date, schedule_day, start_time, end_time, consulting_time,created_at) VALUES (:doctor, :schedule_date, :schedule_day, :start_time, :end_time, :consulting_time,:created_at)";
+                                        $currentDateTime = date('Y-m-d H:i:s');
                                         try {
+                                            //update schedule
+                                            /* `doctor_id`, `schedule_date`, `schedule_day`, `start_time`, `end_time`, `consulting_time`, */
+                                            $sql = "UPDATE schedules SET doctor_id=:doctor, schedule_date=:schedule_date, schedule_day=:schedule_day,start_time=:start_time, end_time=:end_time, consulting_time=:average_consulting_time, maximum_appointment=:maximum_appointment WHERE id=:schedule_id";
                                             if ($stmt = $conn->prepare($sql)) {
-                                                $stmt->bindParam(':doctor', $data['doctor']);
-                                                $stmt->bindParam(':schedule_date', $data['schedule_date']);
-                                                $stmt->bindParam(':schedule_day', $dayName);
-                                                $stmt->bindParam(':start_time', $data['start_time']);
-                                                $stmt->bindParam(':end_time', $data['end_time']);
-                                                $stmt->bindParam(':consulting_time', $data['average_consulting_time']);
-                                                $stmt->bindParam(':created_at', date('Y-m-d H:i:s'));
+                                                $stmt->bindParam(':doctor', $data['doctor'], PDO::PARAM_INT);
+                                                $stmt->bindParam(':schedule_date', $data['schedule_date'], PDO::PARAM_STR);
+                                                $stmt->bindParam(':schedule_day', $dayName, PDO::PARAM_STR);
+                                                $stmt->bindParam(':start_time', $data['start_time'], PDO::PARAM_STR);
+                                                $stmt->bindParam(':end_time', $data['end_time'], PDO::PARAM_STR);
+                                                $stmt->bindParam(':average_consulting_time', $data['average_consulting_time'], PDO::PARAM_INT);
+                                                $stmt->bindParam(':maximum_appointment', $data['maximum_appointment'], PDO::PARAM_INT);
+                                                $stmt->bindParam(':schedule_id', $schedule_id, PDO::PARAM_INT);
                                                 if ($stmt->execute()) {
-                                                    $_SESSION['success'] = "Schedule added successfully";
+                                                    $_SESSION['success'] = 'Schedule updated successfully';
                                                     echo "<script>window.location.href='schedule.php';</script>";
-                                                    exit();
                                                 }
                                             }
                                         } catch (\PDOException $e) {
@@ -98,8 +117,32 @@ include_once('layout/head.php');
                                         }
                                     }
                                 }
+
+                                /* get url param id */
+                                if (isset($_GET['id'])) {
+                                    $id = base64_decode($_GET['id']);
+                                    $sql = "SELECT * FROM schedules WHERE id=:id";
+                                    try {
+                                        if ($stmt = $conn->prepare($sql)) {
+                                            $stmt->bindParam(':id', $id);
+                                            if ($stmt->execute()) {
+                                                $row = $stmt->fetch(PDO::FETCH_OBJ);
+                                                $data['doctor'] = $row->doctor_id;
+                                                $data['schedule_date'] = $row->schedule_date;
+                                                $data['start_time'] = $row->start_time;
+                                                $data['end_time'] = $row->end_time;
+                                                $data['average_consulting_time'] = $row->consulting_time;
+                                                $data['maximum_appointment'] = $row->maximum_appointment;
+                                                $data['schedule_id'] = $row->id;
+                                            }
+                                        }
+                                    } catch (\PDOException $e) {
+                                        die("Error: " . $e->getMessage());
+                                    }
+                                }
                                 ?>
                                 <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) ?>" method="post" id="doctor_schedule_form" autocomplete="off">
+                                    <input type="hidden" name="schedule_id" value="<?php echo  $data['schedule_id'] ?? ''; ?>">
                                     <div class="mb-3">
                                         <label class="control-label">Select Doctor</label>
                                         <select name="doctor" id="doctor" class="form-control" required>
@@ -111,7 +154,10 @@ include_once('layout/head.php');
                                                 $rows = $result->fetchAll(PDO::FETCH_OBJ);
                                                 foreach ($rows as $row) {
                                             ?>
-                                                    <option value="<?php echo $row->id; ?>"><?php echo $row->name; ?></option>
+                                                    <option
+                                                        <?php if ($data['doctor'] == $row->id) echo 'selected'; ?>
+
+                                                        value="<?php echo $row->id; ?>"><?php echo $row->name; ?></option>
                                             <?php
                                                 }
                                             }
@@ -121,19 +167,25 @@ include_once('layout/head.php');
                                     </div>
                                     <div class="mb-3">
                                         <label class="control-label" for="schedule_date">Schedule Date</label>
-                                        <input type="text" class="form-control" name="schedule_date" id="schedule_date" required>
+                                        <input type="text" class="form-control" name="schedule_date"
+                                            value="<?php echo $data['schedule_date'] ?? ''; ?>"
+                                            id="schedule_date" required>
                                         <span class="text-danger"><?php echo $error['schedule_date'] ?? ''; ?></span>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="control-label" for="start_time">Start Time</label>
-                                        <input type="text" class="form-control" name="start_time" id="start_time" required>
+                                        <input type="text" class="form-control" name="start_time"
+                                            value="<?php echo $data['start_time'] ?? ''; ?>"
+                                            id="start_time" required>
                                         <span class="text-danger"><?php echo $error['start_time'] ?? ''; ?></span>
                                     </div>
 
                                     <div class="mb-3">
                                         <label class="control-label" for="end_time">End Time</label>
-                                        <input type="text" class="form-control" name="end_time" id="end_time" required>
+                                        <input type="text" class="form-control" name="end_time"
+                                            value="<?php echo $data['end_time'] ?? ''; ?>"
+                                            id="end_time" required>
                                         <span class="text-danger"><?php echo $error['end_time'] ?? ''; ?></span>
                                     </div>
 
@@ -143,11 +195,21 @@ include_once('layout/head.php');
                                             <option value="" disabled selected>Select Consulting Duration</option>
                                             <?php
                                             for ($i = 5; $i <= 60; $i += 5) {
-                                                echo '<option value="' . $i . '">' . $i . ' Minute</option>';
+                                                echo '<option
+                                                ' . ($data['average_consulting_time'] == $i ? 'selected' : '') . '
+                                                value="' . $i . '">' . $i . ' Minute</option>';
                                             }
                                             ?>
                                         </select>
                                         <span class="text-danger"><?php echo $error['average_consulting_time'] ?? ''; ?></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <!-- max appointment -->
+                                        <label for="maximum_appointment">Max Appointment</label>
+                                        <input type="number" min="1" name="maximum_appointment" class="form-control"
+                                            value="<?php echo $data['maximum_appointment'] ?? ''; ?>"
+                                            id="maximum_appointment">
+                                        <span class="text-danger"><?php echo $error['maximum_appointment'] ?? ''; ?></span>
                                     </div>
 
                                     <div class="text-center pt-3 pb-5">

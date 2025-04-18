@@ -64,7 +64,7 @@ include_once('layout/head.php');
                                         <th>Start Time</th>
                                         <th>End Time</th>
                                         <th>Consulting Time</th>
-                                        <th>Status</th>
+                                        <th>Max Visitor</th>
                                         <th>Action</th>
                                     </tr>
                                 </thead>
@@ -82,16 +82,9 @@ include_once('layout/head.php');
                                                 <td><?php echo $row->schedule_day; ?></td>
                                                 <td><?php echo $row->start_time; ?></td>
                                                 <td><?php echo $row->end_time; ?></td>
-                                                <td><?php echo $row->consulting_time; ?></td>
+                                                <td><?php echo $row->consulting_time; ?> Minutes</td>
                                                 <td>
-                                                    <?php
-                                                    if ($row->status == 'Available') {
-                                                        echo '<span class="badge bg-success">Available</span>';
-                                                    } else {
-                                                        echo '<span class="badge bg-danger">Booked</span>';
-                                                    }
-
-                                                    ?>
+                                                    <?php echo $row->maximum_appointment;  ?>
                                                 </td>
                                                 <td>
                                                     <a href="schedule_edit.php?id=<?php echo base64_encode($row->id) ?>" class="btn btn-primary btn-sm"><i class="bi bi-pencil-square"></i></a>
