@@ -24,14 +24,13 @@ include "layout/navbar.php";
                                 <th>Schedule Day</th>
                                 <th>Start Time</th>
                                 <th>End Time</th>
-                                <th>Consulting Time</th>
                                 <th>Max Appointment</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             <?php
-                            $sql = "SELECT schedules.*, doctors.name as doctorName FROM schedules INNER JOIN doctors ON schedules.doctor_id=doctors.id ORDER BY schedules.created_at DESC;";
+                            $sql = "SELECT schedules.*, doctors.name as doctorName FROM schedules INNER JOIN doctors ON schedules.doctor_id=doctors.id WHERE schedules.schedule_date >= CURDATE() AND schedules.status='Available' ORDER BY schedules.created_at DESC";
                             $result = $conn->query($sql);
                             if ($result->rowCount() > 0) {
                                 $rows = $result->fetchAll(PDO::FETCH_OBJ);
@@ -43,7 +42,6 @@ include "layout/navbar.php";
                                         <td><?php echo $row->schedule_day; ?></td>
                                         <td><?php echo $row->start_time; ?></td>
                                         <td><?php echo $row->end_time; ?></td>
-                                        <td><?php echo $row->consulting_time; ?> Minutes</td>
                                         <td>
                                             <?php echo $row->maximum_appointment;   ?> Person
                                         </td>
@@ -55,7 +53,7 @@ include "layout/navbar.php";
                                                     Get Appointment
                                                 </a>
                                             <?php } else { ?>
-                                                <a href="book_appointment.php?schedule_id=<?php echo $row->id; ?>" class="btn btn-primary btn-sm">
+                                                <a href="book_appointment.php?schedule_id=<?php echo base64_encode($row->id); ?>" class="btn btn-primary btn-sm">
                                                     Get Appointment
                                                 </a>
                                             <?php   } ?>

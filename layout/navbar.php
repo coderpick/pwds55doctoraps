@@ -10,7 +10,7 @@
                  <?php
                     if (isset($_SESSION['is_login']) &&  $_SESSION['is_login'] == true) { ?>
                      <li class="nav-item">
-                         <a class="nav-link" aria-current="page" href="#">My Appointments</a>
+                         <a class="nav-link" aria-current="page" href="my_appointment.php">My Appointments</a>
                      </li>
 
                      <li class="nav-item dropdown">

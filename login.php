@@ -44,6 +44,7 @@ if (isset($_POST['login'])) {
 
                             $_SESSION['username'] = $user['name'];
                             $_SESSION['is_login'] = true;
+                            $_SESSION['patientUserId'] = $user['id'];
 
                             header("Location: index.php");
                         } else {
