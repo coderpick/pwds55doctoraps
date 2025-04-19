@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Apr 18, 2025 at 06:41 AM
+-- Generation Time: Apr 19, 2025 at 06:48 AM
 -- Server version: 8.0.30
 -- PHP Version: 8.3.17
 
@@ -30,14 +30,23 @@ SET time_zone = "+00:00";
 CREATE TABLE `appointments` (
   `id` int NOT NULL,
   `doctor_id` int NOT NULL,
-  `patient_id` int NOT NULL,
+  `user_id` int NOT NULL COMMENT 'Patient user id',
   `schedule_id` int NOT NULL,
-  `appointment_number` varchar(255) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `reason` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `status` enum('Booked','In_Process','Completed','Cancel') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `doctor_comment` text CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
-  `created_at` timestamp NULL DEFAULT NULL
+  `appointment_number` varchar(15) COLLATE utf8mb3_unicode_ci NOT NULL,
+  `appointment_reason` text COLLATE utf8mb3_unicode_ci NOT NULL,
+  `status` enum('Pending','Booked','In_Process','Completed','Cancel') COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Pending',
+  `doctor_comment` text COLLATE utf8mb3_unicode_ci,
+  `created_at` timestamp NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
+
+--
+-- Dumping data for table `appointments`
+--
+
+INSERT INTO `appointments` (`id`, `doctor_id`, `user_id`, `schedule_id`, `appointment_number`, `appointment_reason`, `status`, `doctor_comment`, `created_at`) VALUES
+(1, 1, 22, 6, '653733', 'Sick', 'Pending', NULL, '2025-04-19 06:07:51'),
+(2, 2, 22, 2, '859602', 'afafaf', 'Pending', NULL, '2025-04-19 06:11:23'),
+(3, 1, 23, 6, '273304', 'Fiver', 'Pending', NULL, '2025-04-19 06:37:03');
 
 -- --------------------------------------------------------
 
@@ -95,7 +104,9 @@ INSERT INTO `patients` (`id`, `user_id`, `name`, `phone`, `address`, `gender`, `
 (1, 16, 'Hall Leon', '01725697440', 'Dhaka', 'Male', '1986-05-09', 'Single', '2025-04-16 02:59:39'),
 (2, 17, 'Caryn Hayden', '01755555444', 'Repudiandae laborum', 'Female', '1970-08-14', 'Married', '2025-04-16 03:00:17'),
 (3, 19, 'Brody Graham', '01923569874', 'Natore', 'Male', '1988-10-11', 'Married', '2025-04-16 03:14:32'),
-(4, 20, 'Connor Patel', '01723659874', 'Dhka', 'Female', '1980-05-22', 'Married', '2025-04-17 22:32:49');
+(4, 20, 'Connor Patel', '01723659874', 'Dhka', 'Female', '1980-05-22', 'Married', '2025-04-17 22:32:49'),
+(5, 22, 'Mr. Jamal', '01756123654', 'Natore', 'Male', '1990-02-17', 'Married', '2025-04-19 04:32:01'),
+(6, 23, 'Sabina', '01723659874', 'Rajshahi', 'Female', '1984-05-26', 'Married', '2025-04-19 06:36:34');
 
 -- --------------------------------------------------------
 
@@ -112,7 +123,7 @@ CREATE TABLE `schedules` (
   `end_time` varchar(50) CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL,
   `consulting_time` int NOT NULL,
   `maximum_appointment` int NOT NULL,
-  `status` enum('Available','Booked') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Available',
+  `status` enum('Available','Cancel') CHARACTER SET utf8mb3 COLLATE utf8mb3_unicode_ci NOT NULL DEFAULT 'Available',
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
@@ -122,7 +133,7 @@ CREATE TABLE `schedules` (
 
 INSERT INTO `schedules` (`id`, `doctor_id`, `schedule_date`, `schedule_day`, `start_time`, `end_time`, `consulting_time`, `maximum_appointment`, `status`, `created_at`) VALUES
 (2, 2, '2025-04-23', 'Wednesday', '10:00 AM', '01:00 PM', 15, 20, 'Available', '2025-04-16 06:15:42'),
-(3, 1, '2025-04-19', 'Saturday', '03:00 PM', '06:00 PM', 15, 15, 'Available', '2025-04-18 05:06:39'),
+(3, 1, '2025-04-18', 'Saturday', '03:00 PM', '06:00 PM', 15, 15, 'Available', '2025-04-18 05:06:39'),
 (4, 4, '2025-04-19', 'Saturday', '07:00 AM', '10:00 AM', 15, 15, 'Available', '2025-04-18 05:10:50'),
 (6, 1, '2025-04-21', 'Monday', '08:00 AM', '10:00 AM', 15, 10, 'Available', '2025-04-18 06:00:32');
 
@@ -154,7 +165,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `status`, `type`) VALUES
 (17, 'Caryn Hayden', 'fuqyq@mailinator.com', '$2y$10$DwJqeyVd1flqvad/oxbOVOztY6AEiYJlwOSOP3Vkge6CcAzuNHrky', 'Active', 'patient'),
 (19, 'Brody Graham', 'kamyqulo@mailinator.com', '$2y$10$lGpeCRO6nP6gbpKGIaQO4uJH91ZcheHF.NfkKFH1zKG.XTcT5ihKO', 'Active', 'patient'),
 (20, 'Connor Patel', 'tipiryfuqy@mailinator.com', '$2y$10$I3bs3oDJ/iSdbAr.wkG3QOw51cZak4HAs1NoO2GexHFtQkDpfxyD6', 'Active', 'patient'),
-(21, 'Dr. Md. Kabir khan', 'kabir@gmail.com', '$2y$10$QLpv9ubJIehldNyKQQLE7ORDx2w/gQ/eQW4gH/g6GQS.U1Lc2cXjK', 'Active', 'doctor');
+(21, 'Dr. Md. Kabir khan', 'kabir@gmail.com', '$2y$10$QLpv9ubJIehldNyKQQLE7ORDx2w/gQ/eQW4gH/g6GQS.U1Lc2cXjK', 'Active', 'doctor'),
+(22, 'Mr. Jamal', 'jamal@gmail.com', '$2y$10$F41WVyoMmQku6p7UKlnf3.e5BUNh9xhea/74nHi7onlC.fkN1Rbxm', 'Active', 'patient'),
+(23, 'Sabina', 'sabina@gmail.com', '$2y$10$Z.Uj.YlQ74XcTAR4VBXM..CBuI51jGJH8JhOHHu16IBptecBYqzSe', 'Active', 'patient');
 
 --
 -- Indexes for dumped tables
@@ -166,7 +179,7 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `status`, `type`) VALUES
 ALTER TABLE `appointments`
   ADD PRIMARY KEY (`id`),
   ADD KEY `appointments_doctor_id_index` (`doctor_id`),
-  ADD KEY `appointments_patient_id_index` (`patient_id`),
+  ADD KEY `appointments_user_id_index` (`user_id`),
   ADD KEY `appointments_schedule_id_index` (`schedule_id`);
 
 --
@@ -204,7 +217,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `doctors`
@@ -216,7 +229,7 @@ ALTER TABLE `doctors`
 -- AUTO_INCREMENT for table `patients`
 --
 ALTER TABLE `patients`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `schedules`
@@ -228,7 +241,7 @@ ALTER TABLE `schedules`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
 -- Constraints for dumped tables
@@ -238,7 +251,7 @@ ALTER TABLE `users`
 -- Constraints for table `appointments`
 --
 ALTER TABLE `appointments`
-  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`patient_id`) REFERENCES `patients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `appointments_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `appointments_ibfk_2` FOREIGN KEY (`doctor_id`) REFERENCES `doctors` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `appointments_ibfk_3` FOREIGN KEY (`schedule_id`) REFERENCES `schedules` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
